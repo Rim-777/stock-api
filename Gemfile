@@ -26,7 +26,7 @@ gem "bootsnap", require: false
 gem "rack-cors"
 
 group :development, :test do
-  gem 'rspec-rails', '~> 3.4', '>= 3.4.2'
+  gem 'rspec-rails', '~> 4.0'
   gem 'factory_bot_rails', '~> 6.2'
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
