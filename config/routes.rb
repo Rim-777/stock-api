@@ -3,10 +3,8 @@ Rails.application.routes.draw do
   api vendor_string: 'stock-api', default_version: 1 do
     version 1 do
       cache as: 'v1' do
-        resources :stocks
+        resources :stocks, only: %i[create update index destroy]
       end
     end
   end
-  # Defines the root path route ("/")
-  # root "articles#index"
 end

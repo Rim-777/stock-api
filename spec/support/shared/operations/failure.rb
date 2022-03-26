@@ -6,6 +6,6 @@ shared_examples 'operations/failure' do
   end
 
   it 'contains errors' do
-    expect(operation.call.errors).to eq(expected_error_message)
+    expect(operation.call.errors).to eq(expected_error_messages)
   end
 end
