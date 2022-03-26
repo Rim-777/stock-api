@@ -5,49 +5,50 @@ require 'rails_helper'
 RSpec.describe Stocks::Create do
   let(:operation) { described_class.new(params) }
 
+  def operation_call
+    operation.call
+  end
+
   describe '#call' do
+    let(:stock_name) { 'Stock' }
+    let(:bearer_name) { 'Bearer' }
+
     let(:params) do
       {
         stock_attributes: {
-          name: 'Stock'
+          name: stock_name
         },
         bearer_attributes: {
-          name: 'Bearer'
+          name: bearer_name
         }
       }
     end
 
     context 'success' do
       shared_examples :success do
-        it 'looks like a success' do
-          expect(operation.call).to be_success
-        end
-
-        it 'does not have errors' do
-          expect(operation.call.errors).to be_empty
-        end
+        it_behaves_like 'operations/success'
 
         it 'creates a stock' do
-          expect { operation.call }.to change(Stock, :count).from(0).to(1)
+          expect { operation_call }.to change(Stock, :count).from(0).to(1)
         end
 
         it 'associates a created stock with a a created bearer' do
           operation.call
-          bearer = Bearer.find_by!(name: params[:bearer_attributes][:name])
-          stock = Stock.find_by!(name: params[:stock_attributes][:name])
+          bearer = Bearer.find_by!(name: bearer_name)
+          stock = Stock.find_by!(name: stock_name)
           expect(stock.bearer).to eq(bearer)
         end
       end
 
       context 'bearer exists' do
         before do
-          create(:bearer, name: params[:bearer_attributes][:name])
+          create(:bearer, name: bearer_name)
         end
 
         include_examples :success
 
-        it 'creates a bearer' do
-          expect { operation.call }.not_to change(Bearer, :count)
+        it 'does not create a bearer' do
+          expect { operation_call }.not_to change(Bearer, :count)
         end
       end
 
@@ -55,32 +56,32 @@ RSpec.describe Stocks::Create do
         include_examples :success
 
         it 'creates a bearer' do
-          expect { operation.call }.to change(Bearer, :count).from(0).to(1)
+          expect { operation_call }.to change(Bearer, :count).from(0).to(1)
         end
       end
     end
 
     context 'failure' do
-      before do
-        create(:stock,
-               name: params[:stock_attributes][:name],
-               bearer: create(:bearer, name: 'Test'))
-      end
+      context 'name has been taken' do
+        before do
+          create(:stock,
+                 name: stock_name,
+                 bearer: create(:bearer, name: 'Any'))
+        end
 
-      it 'looks like failure' do
-        expect(operation.call).to be_failure
-      end
+        let(:expected_error_message) do
+          ['Stock, Validation failed: Name has already been taken']
+        end
 
-      it 'contains errors' do
-        expect(operation.call.errors).to eq(['Validation failed: Name has already been taken'])
-      end
+        it_behaves_like 'operations/failure'
 
-      it 'does not create stocks' do
-        expect { operation.call }.not_to change(Stock, :count)
-      end
+        it 'does not create stocks' do
+          expect { operation_call }.not_to change(Stock, :count)
+        end
 
-      it 'does not create bearers' do
-        expect { operation.call }.not_to change(Bearer, :count)
+        it 'does not create bearers' do
+          expect { operation_call }.not_to change(Bearer, :count)
+        end
       end
     end
   end

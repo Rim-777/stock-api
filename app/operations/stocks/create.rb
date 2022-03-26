@@ -3,6 +3,8 @@
 module Stocks
   class Create
     prepend BaseOperation
+    include OperationErrors
+    include BearerHandling
 
     option :stock_attributes do
       option :name, type: Dry::Types['strict.string']
@@ -16,32 +18,21 @@ module Stocks
 
     def call
       ActiveRecord::Base.transaction do
-        ActiveRecord::Base.connection.execute(<<~SQL).clear
-          lock bearers in share row exclusive mode;
-        SQL
-        define_bearer!
+        define_bearer
         create_stock!
       end
-    rescue ActiveRecord::RecordInvalid => e
-      interrupt_with_errors!(e.message)
     end
 
     private
 
-    def define_bearer!
-      @bearer = find_bearer || create_bearer!
-    end
-
-    def find_bearer
-      Bearer.find_by(name: @bearer_attributes.name)
-    end
-
-    def create_bearer!
-      Bearer.create!(@bearer_attributes.to_h)
-    end
-
     def create_stock!
+      ActiveRecord::Base.connection.execute(<<~SQL).clear
+        lock stocks in share row exclusive mode;
+      SQL
+
       @result = @bearer.stocks.create!(@stock_attributes.to_h)
+    rescue ActiveRecord::RecordInvalid => e
+      interrupt_with_errors!(invalid_record_message('Stock', e))
     end
   end
 end
