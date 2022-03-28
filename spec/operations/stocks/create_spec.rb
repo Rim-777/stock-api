@@ -69,7 +69,7 @@ RSpec.describe Stocks::Create do
                  bearer: create(:bearer, name: 'Any'))
         end
 
-        let(:expected_error_message) do
+        let(:expected_error_messages) do
           ['Stock, Validation failed: Name has already been taken']
         end
 

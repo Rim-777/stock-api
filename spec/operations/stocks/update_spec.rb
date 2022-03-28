@@ -158,7 +158,7 @@ RSpec.describe Stocks::Update do
       end
 
       context 'not found' do
-        let(:expected_error_message) do
+        let(:expected_error_messages) do
           ["Couldn't find Stock with 'id'=wrong id"]
         end
 
@@ -179,7 +179,7 @@ RSpec.describe Stocks::Update do
       context 'name has been taken' do
         let(:existing_stock_name) { 'Existing Stock' }
 
-        let(:expected_error_message) do
+        let(:expected_error_messages) do
           ['Stock, Validation failed: Name has already been taken']
         end
 
