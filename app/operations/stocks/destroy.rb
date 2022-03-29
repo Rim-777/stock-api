@@ -7,8 +7,7 @@ module Stocks
     option :id, type: Dry::Types['strict.string']
 
     def call
-      stock = Stock.find(@id).lock!
-      stock.destroy!
+      Stock.find(@id).destroy!
     rescue ActiveRecord::RecordNotDestroyed => e
       fail!(e.message)
     end

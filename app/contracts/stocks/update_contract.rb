@@ -15,13 +15,13 @@ module Stocks
     end
 
     rule(%i[data]) do
-      attribute_list = 'stock_attributes, bearer_attributes'
       if value.empty?
-        message = I18n.t(
-          :missing_attributes,
-          scope: 'errors',
-          attributes: attribute_list
-        )
+        message =
+          I18n.t(
+            :missing_attributes,
+            scope: 'errors',
+            attributes: 'stock_attributes, bearer_attributes'
+          )
 
         key(%i[data]).failure(message)
       end

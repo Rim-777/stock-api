@@ -8,10 +8,6 @@ module BearerHandling
   def define_bearer
     return unless @bearer_attributes
 
-    ActiveRecord::Base.connection.execute(<<~SQL).clear
-      lock bearers in share row exclusive mode;
-    SQL
-
     @bearer = find_bearer || create_bearer
   end
 

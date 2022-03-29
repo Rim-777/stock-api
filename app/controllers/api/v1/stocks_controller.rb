@@ -8,9 +8,11 @@ module Api
 
       def index
         stocks = Stocks::Index.call.result.page(params[:page])
+
         serializer = StockSerializer.new(
-          stocks, include: [:bearer],
-                  links: pagination_links(stocks)
+          stocks,
+          include: [:bearer],
+          links: pagination_links(stocks)
         )
 
         render json: serializer.serialized_json
@@ -18,39 +20,31 @@ module Api
 
       def create
         operation = Stocks::Create.call(@valid_params[:data])
-        if operation.success?
-          serializer = StockSerializer.new(
-            operation.stock, include: [:bearer]
-          )
 
-          render json: serializer.serialized_json, status: :created
+        if operation.success?
+          success_response(operation, :created)
         else
-          messages = operation.errors
-          error_response(messages, :unprocessable_entity)
+          error_response(operation.errors, :unprocessable_entity)
         end
       end
 
       def update
-        operation = Stocks::Update.call(@valid_params[:data].merge(id: params[:id]))
-        if operation.success?
-          serializer = StockSerializer.new(
-            operation.stock, include: [:bearer]
-          )
+        operation = Stocks::Update.call(id: params[:id], **@valid_params[:data])
 
-          render json: serializer.serialized_json, status: :ok
+        if operation.success?
+          success_response(operation, :ok)
         else
-          messages = operation.errors
-          error_response(messages, :unprocessable_entity)
+          error_response(operation.errors, :unprocessable_entity)
         end
       end
 
       def destroy
         operation = Stocks::Destroy.call(id: params[:id])
+
         if operation.success?
           head 204
         else
-          messages = operation.errors
-          error_response(messages, :unprocessable_entity)
+          error_response(operation.errors, :unprocessable_entity)
         end
       end
 
@@ -68,6 +62,14 @@ module Api
       def validate_update_params
         validation = Stocks::UpdateContract.new.call(stock_params)
         result_validation(validation)
+      end
+
+      def success_response(operation, status)
+        serializer = StockSerializer.new(
+          operation.stock, include: [:bearer]
+        )
+
+        render json: serializer.serialized_json, status: status
       end
     end
   end

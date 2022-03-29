@@ -1,6 +1,6 @@
 en:
   errors:
-    record_invalid: '%{entity}, %{messages}'
+    record_invalid: '%{entity}: %{messages}'
     missing_attributes: 'One of the following attributes is missing: %{attributes}'
   api:
     errors:

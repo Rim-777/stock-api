@@ -10,7 +10,6 @@ RSpec.describe Stocks::Update do
     let!(:bearer) { create(:bearer, name: 'Bearer') }
     let!(:stock) { create(:stock, name: old_stock_name, bearer: bearer) }
     let(:params) { { id: stock.id } }
-
     let(:new_bearer_name) { 'New Bearer' }
     let(:new_stock_name) { 'New Stock' }
 
@@ -40,7 +39,7 @@ RSpec.describe Stocks::Update do
     end
 
     shared_examples :does_not_update_stock_name do
-      it 'does not update a the stock' do
+      it 'does not update the stock' do
         expect do
           operation_call
           stock.reload
@@ -69,7 +68,6 @@ RSpec.describe Stocks::Update do
         end
 
         it_behaves_like 'operations/success'
-
         include_examples :creates_new_bearer
 
         it 'does not update existing bearer' do
@@ -80,7 +78,6 @@ RSpec.describe Stocks::Update do
         end
 
         include_examples :updates_stock_name
-
         include_examples :associates_stock_with_bearer
       end
 
@@ -92,7 +89,6 @@ RSpec.describe Stocks::Update do
         end
 
         it_behaves_like 'operations/success'
-
         include_examples :updates_stock_name
       end
 
@@ -104,11 +100,8 @@ RSpec.describe Stocks::Update do
         end
 
         it_behaves_like 'operations/success'
-
         include_examples :does_not_update_stock_name
-
         include_examples :creates_new_bearer
-
         include_examples :associates_stock_with_bearer
       end
 
@@ -123,10 +116,9 @@ RSpec.describe Stocks::Update do
         end
 
         it_behaves_like 'operations/success'
-
         include_examples :does_not_create_bearers
 
-        it 'associates the stock wth a target bearer' do
+        it 'associates the stock with a target bearer' do
           expect do
             operation_call
             stock.reload
@@ -151,9 +143,7 @@ RSpec.describe Stocks::Update do
     context 'failure' do
       shared_examples :failure do
         it_behaves_like 'operations/failure'
-
         include_examples :does_not_update_stock_name
-
         include_examples :does_not_create_bearers
       end
 
@@ -161,7 +151,7 @@ RSpec.describe Stocks::Update do
         let(:existing_stock_name) { 'Existing Stock' }
 
         let(:expected_error_messages) do
-          ['Stock, Validation failed: Name has already been taken']
+          ['Stock: Validation failed: Name has already been taken']
         end
 
         before do

@@ -32,6 +32,7 @@ RSpec.describe Stocks::Destroy do
 
     context 'failure' do
       let(:message) { 'Record cannot be destroyed' }
+      let(:expected_error_messages) { [message] }
 
       before do
         allow(Stock).to receive(:find).and_return(stock)
@@ -40,7 +41,6 @@ RSpec.describe Stocks::Destroy do
           .and_raise(ActiveRecord::RecordNotDestroyed, message)
       end
 
-      let(:expected_error_messages) { [message] }
       it_behaves_like 'operations/failure'
 
       it 'does not destroy the stock' do

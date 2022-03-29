@@ -1,24 +1,49 @@
-# README
+## Stock Api
+Ruby Rails application for JSON-API with ActiveRecord, RSpec
+### Dependencies:
+- Ruby 2.7.5
+- PostgreSQL
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+### Description
+The application manages stocks and bearers
 
-Things you may want to cover:
+### Installation:
+- Clone poject
+- Run bundler:
 
-* Ruby version
+ ```shell
+ $ bundle install
+ ```
+- Create database.yml:
+```shell
+$ cp config/database.yml.sample config/database.yml
+```
 
-* System dependencies
+- Run application:
 
-* Configuration
+ ```shell
+ $ rails server
+ ```
 
-* Database creation
+##### Tests:
+To execute tests, run following commands:
 
-* Database initialization
+```shell
+ $ bundle exec rake db:migrate RAILS_ENV=test #(the first time only)
+ $ bundle exec rspec
+```
 
-* How to run the test suite
+### Explanation of the approach:
+DDD Service-based app design with step-based operations 
 
-* Services (job queues, cache servers, search engines, etc.)
+#### Common logic:
+Stock API with 4 endpoints:
+1) GET ```api/stocks``` - returns a list of available stocks with related bearers
+2) POST ```api/stocks``` - creates a stock and links it to a bearer, if a bearer doesn't exist it will be created
+3) PATCH ```api/stocks``` - updates a stock, if bearer attributes are present - finds or creates a new bearer
+4) DELETE ```api/stocks``` - deletes a stock from the API
 
-* Deployment instructions
+[See Swagger Docs](https://app.swaggerhub.com/apis/Rim-777/Stock/1.0.0#/IndexStock)
+### License
 
-* ...
+The software is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

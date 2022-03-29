@@ -18,6 +18,11 @@ module Stocks
 
     def call
       ActiveRecord::Base.transaction do
+        ActiveRecord::Base.connection.execute(<<~SQL).clear
+          lock bearers in share row exclusive mode;
+          lock stocks in share row exclusive mode;
+        SQL
+
         define_bearer
         create_stock!
       end
@@ -26,10 +31,6 @@ module Stocks
     private
 
     def create_stock!
-      ActiveRecord::Base.connection.execute(<<~SQL).clear
-        lock stocks in share row exclusive mode;
-      SQL
-
       @stock = @bearer.stocks.create!(@stock_attributes.to_h)
     rescue ActiveRecord::RecordInvalid => e
       interrupt_with_errors!(invalid_record_message('Stock', e))

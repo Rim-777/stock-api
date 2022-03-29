@@ -4,14 +4,14 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::StocksController, type: :request do
   let(:response_body) { JSON.parse(response.body, symbolize_names: true) }
+
   let(:headers) do
     { 'Content-Type' => 'application/json', 'Accept' => 'application/json' }
   end
 
-  let(:stock_name) { 'Stock' }
   let(:bearer_name) { 'Bearer' }
-
   let(:bearer) { create(:bearer, name: bearer_name) }
+  let(:stock_name) { 'Stock' }
   let(:stock) { create(:stock, bearer: bearer, name: stock_name) }
 
   def serialized_stock_with_bearer(stock, bearer, stock_name)
@@ -60,7 +60,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
     let(:expected_response_body) do
       {
         errors: [
-          { detail: 'Stock, Validation failed: Name has already been taken' }
+          { detail: 'Stock: Validation failed: Name has already been taken' }
         ]
       }
     end

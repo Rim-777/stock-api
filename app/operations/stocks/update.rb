@@ -20,20 +20,23 @@ module Stocks
 
     def call
       ActiveRecord::Base.transaction do
+        ActiveRecord::Base.connection.execute(<<~SQL).clear
+          lock bearers in share row exclusive mode;
+        SQL
+
         set_stock!
         define_bearer
         update_stock!
       end
     end
 
-    private
-
     def set_stock!
-      @stock = Stock.find(@id)
+      @stock = Stock.lock.find(@id)
     end
 
+    private
+
     def update_stock!
-      @stock.lock!
       attributes = @stock_attributes ? @stock_attributes.to_h : {}
       attributes[:bearer] = @bearer if @bearer
       @stock.update!(attributes) if attributes.any?

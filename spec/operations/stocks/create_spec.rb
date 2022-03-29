@@ -32,7 +32,7 @@ RSpec.describe Stocks::Create do
           expect { operation_call }.to change(Stock, :count).from(0).to(1)
         end
 
-        it 'associates a created stock with a a created bearer' do
+        it 'associates a created stock with a created bearer' do
           operation.call
           bearer = Bearer.find_by!(name: bearer_name)
           stock = Stock.find_by!(name: stock_name)
@@ -62,15 +62,17 @@ RSpec.describe Stocks::Create do
     end
 
     context 'failure' do
-      context 'name has been taken' do
+      context 'record not unique' do
         before do
-          create(:stock,
-                 name: stock_name,
-                 bearer: create(:bearer, name: 'Any'))
+          create(
+            :stock,
+            name: stock_name,
+            bearer: create(:bearer, name: 'Any')
+          )
         end
 
         let(:expected_error_messages) do
-          ['Stock, Validation failed: Name has already been taken']
+          ['Stock: Validation failed: Name has already been taken']
         end
 
         it_behaves_like 'operations/failure'
