@@ -14,6 +14,7 @@ module ApiErrors
     when ActiveRecord::RecordNotFound
       error_response(e.message, :not_found)
     else
+      Raven.capture_exception(e)
       error_response(I18n.t(:unhandled, scope: 'api.errors'), :unprocessable_entity)
     end
   end
