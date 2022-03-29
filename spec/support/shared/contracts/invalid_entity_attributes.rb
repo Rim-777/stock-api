@@ -2,13 +2,13 @@
 
 shared_examples 'contracts/invalid_entity_attributes' do
   context 'invalid value' do
-    let(:expected_message) do
-      { key => ['must be a hash'] }
+    let(:expected_messages) do
+      { data: { key => ['must be a hash'] } }
     end
 
     context 'invalid type' do
       before do
-        params[key] = []
+        params[:data][key] = []
       end
 
       it_behaves_like 'contracts/invalid_attribute'
@@ -16,7 +16,7 @@ shared_examples 'contracts/invalid_entity_attributes' do
 
     context 'nil' do
       before do
-        params[key] = nil
+        params[:data][key] = nil
       end
 
       it_behaves_like 'contracts/invalid_attribute'
@@ -28,11 +28,11 @@ shared_examples 'contracts/invalid_entity_attributes' do
 
     context 'missing key' do
       before do
-        params[key].delete(sub_key)
+        params[:data][key].delete(sub_key)
       end
 
-      let(:expected_message) do
-        { key => { sub_key => ['is missing'] } }
+      let(:expected_messages) do
+        { data: { key => { sub_key => ['is missing'] } } }
       end
 
       it_behaves_like 'contracts/invalid_attribute'
@@ -41,11 +41,11 @@ shared_examples 'contracts/invalid_entity_attributes' do
     context 'invalid value' do
       context 'empty' do
         before do
-          params[key][sub_key] = ''
+          params[:data][key][sub_key] = ''
         end
 
-        let(:expected_message) do
-          { key => { sub_key => ['must be filled'] } }
+        let(:expected_messages) do
+          { data: { key => { sub_key => ['must be filled'] } } }
         end
 
         it_behaves_like 'contracts/invalid_attribute'
@@ -53,11 +53,11 @@ shared_examples 'contracts/invalid_entity_attributes' do
 
       context 'nil' do
         before do
-          params[key][sub_key] = nil
+          params[:data][key][sub_key] = nil
         end
 
-        let(:expected_message) do
-          { key => { sub_key => ['must be a string'] } }
+        let(:expected_messages) do
+          { data: { key => { sub_key => ['must be a string'] } } }
         end
 
         it_behaves_like 'contracts/invalid_attribute'

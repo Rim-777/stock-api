@@ -6,6 +6,6 @@ shared_examples 'contracts/invalid_attribute' do
   end
 
   it 'has errors' do
-    expect(validation.call(params).errors.to_h).to eq(expected_message)
+    expect(validation.call(params).errors.to_h).to eq(expected_messages)
   end
 end

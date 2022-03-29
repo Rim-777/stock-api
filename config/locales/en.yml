@@ -1,6 +1,7 @@
 en:
   errors:
     record_invalid: '%{entity}, %{messages}'
+    missing_attributes: 'One of the following attributes is missing: %{attributes}'
   api:
     errors:
       unhandled: 'Sorry, something went wrong on out side, we are already working on it'

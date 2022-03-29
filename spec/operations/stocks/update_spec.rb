@@ -157,26 +157,7 @@ RSpec.describe Stocks::Update do
         include_examples :does_not_create_bearers
       end
 
-      context 'not found' do
-        let(:expected_error_messages) do
-          ["Couldn't find Stock with 'id'=wrong id"]
-        end
-
-        before do
-          params[:id] = 'wrong id'
-
-          params[:stock_attributes] = {
-            name: new_stock_name
-          }
-          params[:bearer_attributes] = {
-            name: new_bearer_name
-          }
-        end
-
-        include_examples :failure
-      end
-
-      context 'name has been taken' do
+      context 'record not unique' do
         let(:existing_stock_name) { 'Existing Stock' }
 
         let(:expected_error_messages) do

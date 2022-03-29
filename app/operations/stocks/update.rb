@@ -30,8 +30,6 @@ module Stocks
 
     def set_stock!
       @stock = Stock.find(@id)
-    rescue ActiveRecord::RecordNotFound => e
-      interrupt_with_errors!(e.message)
     end
 
     def update_stock!

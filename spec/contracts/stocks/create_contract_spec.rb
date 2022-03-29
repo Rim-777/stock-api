@@ -7,11 +7,13 @@ RSpec.describe Stocks::CreateContract do
 
   let(:params) do
     {
-      stock_attributes: {
-        name: 'Stock'
-      },
-      bearer_attributes: {
-        name: 'Bearer'
+      data: {
+        stock_attributes: {
+          name: 'Stock'
+        },
+        bearer_attributes: {
+          name: 'Bearer'
+        }
       }
     }
   end
@@ -21,16 +23,24 @@ RSpec.describe Stocks::CreateContract do
   end
 
   context 'failure' do
-    context '/stock_attributes' do
+    context '/data' do
+      let(:expected_messages) do
+        { key => { bearer_attributes: ['is missing'], stock_attributes: ['is missing'] } }
+      end
+
+      it_behaves_like 'contracts/invalid_root_attribute_data'
+    end
+
+    context 'dats/stock_attributes' do
       let(:key) { :stock_attributes }
 
       context 'missing key' do
         before do
-          params.delete(key)
+          params[:data].delete(key)
         end
 
-        let(:expected_message) do
-          { key => ['is missing'] }
+        let(:expected_messages) do
+          { data: { key => ['is missing'] } }
         end
 
         it_behaves_like 'contracts/invalid_attribute'
@@ -39,16 +49,16 @@ RSpec.describe Stocks::CreateContract do
       it_behaves_like 'contracts/invalid_entity_attributes'
     end
 
-    context '/bearer_attributes' do
+    context 'data/bearer_attributes' do
       let(:key) { :bearer_attributes }
 
       context 'missing key' do
         before do
-          params.delete(key)
+          params[:data].delete(key)
         end
 
-        let(:expected_message) do
-          { key => ['is missing'] }
+        let(:expected_messages) do
+          { data: { key => ['is missing'] } }
         end
 
         it_behaves_like 'contracts/invalid_attribute'
